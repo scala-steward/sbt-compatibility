@@ -31,7 +31,7 @@ lazy val `sbt-compatibility` = project
       compilerPlugin("org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.full)
     ),
     libraryDependencies ++= Seq(
-      "io.get-coursier" % "interface" % "0.0.22",
+      "io.get-coursier" % "interface" % "0.0.23",
       "io.get-coursier" %% "versions" % "0.2.2"
     ),
     scriptedDependencies := {
