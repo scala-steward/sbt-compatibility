@@ -36,7 +36,7 @@ lazy val `sbt-version-policy` = project
     ),
     libraryDependencies ++= Seq(
       "io.get-coursier" % "interface" % "0.0.22",
-      "io.get-coursier" %% "versions" % "0.2.2"
+      "io.get-coursier" %% "versions" % "0.3.0"
     ),
     scriptedDependencies := {
       scriptedDependencies.value
