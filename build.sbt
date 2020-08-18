@@ -1,7 +1,7 @@
 
 inThisBuild(List(
   organization := "ch.epfl.scala",
-  homepage := Some(url("https://github.com/scalacenter/sbt-compatibility")),
+  homepage := Some(url("https://github.com/scalacenter/sbt-version-policy")),
   licenses := List("Apache-2.0" -> url("http://www.apache.org/licenses/LICENSE-2.0")),
   developers := List(
     Developer(
@@ -13,16 +13,20 @@ inThisBuild(List(
   )
 ))
 
-lazy val `sbt-compatibility-rules` = project
+lazy val root = (project in file("."))
+  .aggregate(`sbt-version-policy-rules`, `sbt-version-policy`, `sbt-version-policy-dummy`)
   .settings(
-    sbtPlugin := true
+    name := "sbt-version-policy root",
+    publish / skip := true,
   )
 
-lazy val `sbt-compatibility` = project
-  .dependsOn(`sbt-compatibility-rules`)
-  .enablePlugins(ScriptedPlugin)
+lazy val `sbt-version-policy-rules` = project
+  .enablePlugins(SbtPlugin)
+
+lazy val `sbt-version-policy` = project
+  .dependsOn(`sbt-version-policy-rules`)
+  .enablePlugins(SbtPlugin)
   .settings(
-    sbtPlugin := true,
     scriptedLaunchOpts += "-Dplugin.version=" + version.value,
     scriptedBufferLog := false,
     addSbtPlugin("com.typesafe" % "sbt-mima-plugin" % "0.7.0"),
@@ -31,14 +35,16 @@ lazy val `sbt-compatibility` = project
       compilerPlugin("org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.full)
     ),
     libraryDependencies ++= Seq(
-      "io.get-coursier" % "interface" % "0.0.24",
-      "io.get-coursier" %% "versions" % "0.2.2"
+      "io.get-coursier" % "interface" % "0.0.22",
+      "io.get-coursier" %% "versions" % "0.2.2",
+      "com.eed3si9n.verify" %% "verify" % "0.2.0" % Test,
     ),
+    testFrameworks += new TestFramework("verify.runner.Framework"),
     scriptedDependencies := {
       scriptedDependencies.value
-      publishLocal.in(`sbt-compatibility-rules`).value
+      publishLocal.in(`sbt-version-policy-rules`).value
     }
   )
 
-lazy val `sbt-compatibility-dummy` = project
-  .in(file("sbt-compatibility/target/dummy"))
+lazy val `sbt-version-policy-dummy` = project
+  .in(file("sbt-version-policy/target/dummy"))
